@@ -47,8 +47,8 @@ class Dingdingmail:
         """
         功能描述: 用于记录钉钉的通知
         参数:
-            text_ : 钉钉通知标题
-            title_ : 钉钉通知内容
+            text_ : 钉钉通知内容
+            title_ : 钉钉通知标题
         返回值:
             {"code": 404, "data": "配置文件为空,跳过钉钉通知"}
             {"code": 200, "data": dingding_}  返回钉钉状态码

@@ -17,7 +17,7 @@ EZ-Web 自动签到工具是一个基于 Python 的自动化脚本，用于 M-SE
 ## 安装依赖
 
 ```bash
-pip install requests schedule pytz apscheduler
+pip install requests schedule pytz apscheduler loguru
 ```
 
 ## 配置说明

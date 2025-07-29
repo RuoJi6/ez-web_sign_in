@@ -142,7 +142,7 @@ class AutoQiandao:
             if data.get("status") == 200:
                 accrued = data["data"]["accrued"]
                 total = data["data"]["total"]
-                point_info = f"查询积分成功: 今日获得 {accrued}, 总积分 {total}"
+                point_info = f"查询积分成功: 累计积分 {accrued}, 当前积分 {total}"
                 logger.info(point_info)
                 self.results.append(point_info)
             else:
