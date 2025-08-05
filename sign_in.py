@@ -55,6 +55,7 @@ class AutoQiandao:
             else:
                 logger.error(f"获取验证码失败: {data}")
                 self.results.append(f"获取验证码失败: {data}")
+                time.sleep(5) # 延迟获取，避免出现 {'status': 429, 'message': '请求失败', 'data': '请求太频繁了，摸会鱼吧'} 错误
                 return None, None
         except Exception as e:
             logger.exception(f"请求验证码时发生错误: {e}")
