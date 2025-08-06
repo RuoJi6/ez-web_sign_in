@@ -52,10 +52,16 @@ class AutoQiandao:
                 captcha_base64 = data["data"]["captcha"].split(",")[1]
                 logger.info(f"获取验证码成功，ID: {captcha_id}")
                 return captcha_id, captcha_base64
+            elif data.get("status") == 429:
+                # 遇到频率限制，延长等待时间
+                logger.warning(f"遇到频率限制: {data}")
+                self.results.append(f"获取验证码失败: {data}")
+                time.sleep(30)  # 频率限制时等待30秒
+                return None, None
             else:
                 logger.error(f"获取验证码失败: {data}")
                 self.results.append(f"获取验证码失败: {data}")
-                time.sleep(5) # 延迟获取，避免出现 {'status': 429, 'message': '请求失败', 'data': '请求太频繁了，摸会鱼吧'} 错误
+                time.sleep(10)  # 其他错误等待10秒
                 return None, None
         except Exception as e:
             logger.exception(f"请求验证码时发生错误: {e}")
@@ -176,15 +182,21 @@ class AutoQiandao:
                     else:
                         logger.warning(f"第 {retry_count} 次登录失败，准备重试...")
                         if retry_count < self.max_retries:
-                            time.sleep(2)  # 等待2秒后重试
+                            # 使用指数退避策略
+                            wait_time = min(2 ** retry_count, 60)  # 最长等待60秒
+                            time.sleep(wait_time)
                 else:
                     logger.warning(f"第 {retry_count} 次验证码识别失败，准备重试...")
                     if retry_count < self.max_retries:
-                        time.sleep(2)
+                        wait_time = min(2 ** retry_count, 60)
+                        time.sleep(wait_time)
             else:
                 logger.warning(f"第 {retry_count} 次获取验证码失败，准备重试...")
                 if retry_count < self.max_retries:
-                    time.sleep(2)
+                    # 获取验证码失败时使用更长的等待时间
+                    wait_time = min(10 * retry_count, 120)  # 最长等待2分钟
+                    logger.info(f"等待 {wait_time} 秒后重试...")
+                    time.sleep(wait_time)
         
         if not success:
             error_msg = f"经过 {self.max_retries} 次尝试后仍然失败"
